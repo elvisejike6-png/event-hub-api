@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+venv/
+.venv/
+event_hub.db
+uploads/
+.env
+event_hub

@@ -36,7 +36,7 @@ def create_booking(booking:Booking):
     cursor = conn.cursor()
     
     cursor.execute(
-        """SELECT price, available_ticket, FROM events WHERE id =? """,(booking.event_id,)
+        """SELECT price, available_ticket FROM events WHERE id =? """,(booking.event_id,)
                    
     )
     event =cursor.fetchone()
@@ -99,7 +99,7 @@ def get_bookings():
                 "status":booking[3]
             }
         )
-        return result
+    return result
 # update booking
 @app.put("/update_booking/{id}")
 def update_booking (id:int,booking:Booking):
@@ -235,7 +235,7 @@ def delete_events(id:int):
 # SEARCH FOR EVENT
 
 @app.get("/event_search/search")
-def search_event(title:str,location:str):
+def search_event(title:str):
     conn=sqlite3.connect("event_hub.db")
     cursor =conn.cursor()
     cursor.execute("SELECT * FROM events WHERE title LIKE ?",(F"%{title}%",))
@@ -260,7 +260,8 @@ def filtering(max_price:int = None, location :str = None):
 def upload_event(id: int, image: UploadFile = File(...)):
     allowed_extensions = [".jpg",".jpeg",".png",".webp"]
     extension = os.path.splitext(image.filename)[1].lower()
-    if allowed_extensions:
+    
+    if extension not in allowed_extensions:
         return{"message":"File type not allowed"}
     os.makedirs("uploads", exist_ok=True)
     file_path = f"uploads/{image.filename}"
